@@ -17,5 +17,8 @@ class UserAuth
         if(!Session::has("isLogged")){
             return $this->redirect("user/fail");
         }
+        else{
+            $aa = "test";
+        }
     }
 }

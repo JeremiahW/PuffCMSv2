@@ -18,9 +18,8 @@ class BaseController extends Controller
 
     public function __construct(Request $request)
     {
-        Hook::listen("UserAuth", $params);
+        // Hook::listen("UserAuth", $params);
         parent::__construct($request);
-
         header('Access-Control-Allow-Origin: *');
     }
 }

@@ -13,9 +13,11 @@ use app\common\BaseController;
 use app\common\PuffCMSHelper;
 use app\index\model\Client as ClientModel;
 use app\index\model\MemberLevel;
+use think\Controller;
 use think\Db;
 use think\Request;
 use think\response\Json;
+use think\Session;
 
 class Client extends BaseController
 {

@@ -59,8 +59,7 @@ export default class OrderAdd extends React.Component{
 
     }
     getOptions(input){
-        console.log(input);
-
+        console.log(RequestUrl.POST_GET_CLIENTS+"/search_name/"+input);
        return fetch(RequestUrl.POST_GET_CLIENTS+"/search_name/"+input).then((response)=>{
            return response.json();
        }).then((json)=>{
@@ -135,6 +134,7 @@ export default class OrderAdd extends React.Component{
                 newState[name] = event.target.value;
         }
         this.setState(newState);
+
     }
     onBtnSubmit(){
         let items = OrderAction.getFinalItems();

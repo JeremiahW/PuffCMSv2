@@ -12,6 +12,7 @@ import '../node_modules/font-awesome/css/font-awesome.css'
 import '../node_modules/animate.css/animate.min.css'
 import '../css/style.css'
 
+
 ReactDOM.render(
     <Router history={hashHistory}>{routes}</Router>,
     document.getElementById('root')
