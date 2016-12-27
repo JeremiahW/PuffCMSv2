@@ -10,6 +10,7 @@ namespace app\common;
 
 
 use think\Controller;
+use think\Hook;
 use think\Request;
 
 class BaseController extends Controller
@@ -17,7 +18,7 @@ class BaseController extends Controller
 
     public function __construct(Request $request)
     {
-       // Hook::listen("CheckAuth", $params);
+        Hook::listen("UserAuth", $params);
         parent::__construct($request);
 
         header('Access-Control-Allow-Origin: *');

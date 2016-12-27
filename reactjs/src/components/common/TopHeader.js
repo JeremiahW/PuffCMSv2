@@ -1,13 +1,30 @@
 import React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Button } from 'react-bootstrap';
 import { smoothlyMenu } from '../layouts/Helpers';
+import * as RequestUrl from "../../constants/request-url-constants";
 
 class TopHeader extends React.Component {
+    constructor(props){
+        super(props);
+        this.onLogOff = this.onLogOff.bind(this);
 
+    }
     toggleNavigation(e) {
         e.preventDefault();
         $("body").toggleClass("mini-navbar");
         smoothlyMenu();
+    }
+
+    onLogOff(){
+        console.log("onLogOff");
+        $.ajax({
+            url:RequestUrl.USER_LOG_OUT,
+            type:"POST",
+            success:function (response) {
+                console.log(response);
+                this.props.logoff();
+            }.bind(this)
+        });
     }
 
     render() {
@@ -20,7 +37,7 @@ class TopHeader extends React.Component {
                     <ul className="nav navbar-top-links navbar-right">
                         <li>
                             <a href="#">
-                                <i className="fa fa-sign-out"></i> Log out
+                                <i className="fa fa-sign-out"></i> <Button onClick={this.onLogOff}>Log out</Button>
                             </a>
                         </li>
                     </ul>

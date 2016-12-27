@@ -1,6 +1,7 @@
 var webpack = require('webpack');
+var glob = require('glob');
+var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 
@@ -52,6 +53,7 @@ module.exports={
   entry:{
     "js/index":"./src/index.js"
   },
+
     output:{
         path:"./build",
         filename:"[name].js"
@@ -75,3 +77,32 @@ module.exports={
 
     }
 };
+
+function getSource() {
+    var source = {
+        htmlFiles: [],
+        entry: {}
+    };
+
+    var pageSource = glob.sync('../*.html');
+    var jsSource = glob.sync('./src/**/*.js');
+    var entry = {}; // 存储 all
+
+    jsSource.forEach(function(item) {
+        entry['js/' + path.basename(item, '.js')] = item;
+    });
+
+    pageSource.forEach(function(page) {
+        var jsChunkName = 'js/' + path.basename(page, '.html');
+        source.htmlFiles.push({
+            filename: 'html/' + path.basename(page),
+            pageSource: page,
+            jsChunkName: jsChunkName
+        });
+
+        source.entry[jsChunkName] = entry[jsChunkName];
+    });
+
+
+    return source;
+}

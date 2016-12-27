@@ -135,7 +135,6 @@ export default class OrderAdd extends React.Component{
                 newState[name] = event.target.value;
         }
         this.setState(newState);
-
     }
     onBtnSubmit(){
         let items = OrderAction.getFinalItems();

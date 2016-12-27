@@ -1,7 +1,6 @@
 import React from 'react';
 
 class Blank extends React.Component {
-
     render() {
         return (
             <div>
@@ -13,7 +12,6 @@ class Blank extends React.Component {
     componentDidMount(){
         $('body').addClass('gray-bg');
     }
-
     componentWillUnmount(){
         $('body').removeClass('gray-bg');
     }

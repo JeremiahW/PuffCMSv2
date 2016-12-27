@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Button } from 'react-bootstrap';
 import { Link, Location } from 'react-router';
+import * as RequestUrl from "../../constants/request-url-constants";
 
 class Navigation extends Component {
-
+    constructor(props){
+        super(props);
+        this.onLogOff = this.onLogOff.bind(this);
+        this.state = {
+            refresh:false,
+        }
+    }
     componentDidMount() {
         const { menu } = this.refs;
         $(menu).metisMenu();
@@ -17,6 +24,18 @@ class Navigation extends Component {
         return this.props.location.pathname.indexOf(routeName) > -1 ? "nav nav-second-level collapse in" : "nav nav-second-level collapse";
     }
 
+    onLogOff(){
+        console.log("onLogOff");
+        $.ajax({
+            url:RequestUrl.USER_LOG_OUT,
+            type:"POST",
+            success:function (response) {
+
+                console.log(response);
+            }.bind(this)
+        });
+    }
+
     render() {
         return (
             <nav className="navbar-default navbar-static-side" role="navigation">
@@ -26,9 +45,9 @@ class Navigation extends Component {
                              </span>
                                 <a data-toggle="dropdown" className="dropdown-toggle" href="#">
                             <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">Example user</strong>
-                             </span> <span className="text-muted text-xs block">Example position<b className="caret"></b></span> </span> </a>
+                             </span>  </span> </a>
                                 <ul className="dropdown-menu animated fadeInRight m-t-xs">
-                                    <li><a href="#"> Logout</a></li>
+                                    <li><Button onClick={this.onLogOff}> Logout</Button></li>
                                 </ul>
                             </div>
                             <div className="logo-element">
