@@ -18,6 +18,11 @@ use think\Session;
 
 class User extends Controller
 {
+    public function __construct()
+    {
+        header('Access-Control-Allow-Origin: *');
+    }
+
     public function login(){
         if(Request::instance()->isPost()){
             $user = input("post.username");
@@ -26,43 +31,33 @@ class User extends Controller
             $map["Username"] = $user;
             $map["Password"] = $pwd;
 
-            $isLoggedIn = false;
-
             $num = UserModel::where($map)->count();
             if($num == 1){
-                Session::set("isLogged", "true");
-                Session::set("name", $user);
-
-                $isLoggedIn = true;
-                return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, $isLoggedIn, "验证通过");
-
+               $token = PuffCMSHelper::Persist($user);
+               return PuffCMSHelper::JsonResultNoPagination($token, true, "验证通过");
             }
-            return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, $isLoggedIn, "验证失败");
 
+            return PuffCMSHelper::JsonResultNoPagination("", false, "验证失败");
         }
     }
 
     public function logoff(){
-        Session::set("isLogged", null);
-        Session::set("name", null);
+        $token = Request::instance()->param("token");
+        PuffCMSHelper::Logoff($token);
         return PuffCMSHelper::JsonResultNoPagination(true, true, "注销登录");
     }
 
     public function state(){
-        if(Session::has("isLogged")){
-            $user = Session::get("name");
-            return PuffCMSHelper::JsonResultNoPagination($user, true, "验证通过");
+        $token = Request::instance()->param("token");
+        $isLoggedIn = PuffCMSHelper::IsLoggedIn($token);
+        if(!$isLoggedIn){
+            return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, false, "验证失败");
         }
-        return PuffCMSHelper::JsonResultNoPagination(Session::get("isLogged"), false, "验证失败");
+        return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, true, "验证失败");
     }
 
     public function fail(){
         return PuffCMSHelper::JsonResultNoPagination("没有访问权限", false, "没有访问权限");
     }
 
-    public function pass(){
-        Session::set("isLogged", true);
-        Session::set("name", "test");
-        return PuffCMSHelper::JsonResultNoPagination("test", true, "验证通过");
-    }
 }

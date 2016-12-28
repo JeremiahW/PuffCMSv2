@@ -2,7 +2,7 @@ import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
 import PrepaidDispatcher from "../../actions/prepaid/prepaid-creator";
-
+import cookie from 'react-cookie';
 var _result = [];
 var _details = [];
 var _list = [];
@@ -62,7 +62,7 @@ function save(data) {
     $.ajax({
         url:RequestUrl.POST_PREPAID,
         type:"POST",
-        data:{form:data},
+        data:{form:data,token:cookie.load('token')},
         success:function (response) {
             if(response.result == true){
                 _result = response;
@@ -77,7 +77,7 @@ function getList(data) {
     $.ajax({
         url:RequestUrl.GET_PREPAID_LIST,
         type:"POST",
-        data:{clientId:data},
+        data:{clientId:data,token:cookie.load('token')},
         success:function (response) {
             if(response.result == true){
                 _list = response.data;

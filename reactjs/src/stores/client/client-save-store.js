@@ -6,6 +6,7 @@ import ClientSaveDispatcher from "../../actions/client/client-save-creator";
 import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
+import cookie from 'react-cookie';
 
 var _memberLevels;
 
@@ -39,7 +40,7 @@ function initMemberLevels(){
         url:RequestUrl.POST_GET_MEMBERLEVEL,
         type:"POST",
         dataType:"json",
-        data:{},
+        data:{token:cookie.load('token')},
         success:function (response) {
             if(response.result == true){
                 _memberLevels = response.data;

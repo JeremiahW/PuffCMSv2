@@ -34,6 +34,10 @@ var ActionConstants = keyMirror({
     PREPAID_SAVE:null,
     PREPAID_GET_LIST:null,
     PREPAID_GET_DETAILED:null,
+
+    PRINT_ORDER_REVIEW:null,
+    PRINT_PREPAID_RECEIPT_REVIEW:null,
+    PRINT_COMPLETED:null,
  });
 
 export {ActionConstants};

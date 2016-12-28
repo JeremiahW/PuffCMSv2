@@ -5,6 +5,7 @@ import OrderSearchDispatcher from "../../actions/order/order-search-creator";
 import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
+import cookie from 'react-cookie';
 
 var _status=[];
 var _result = [];
@@ -52,6 +53,13 @@ class OrderSearchStoreClass extends EventEmitter{
     getSelections(){
         return _selection;
     }
+
+    dispose(){
+         _status=[];
+         _result = [];
+         _condition = [];
+         _selection=[];
+    }
 }
 
 const OrderSearchStore = new OrderSearchStoreClass();
@@ -77,6 +85,7 @@ function getStatus(data){
         url:RequestUrl.GET_ORDER_STATUS,
         type:"POST",
         dataType:"json",
+        data:{token:cookie.load('token')},
         success:function (response) {
             if(response.result == true){
                 _status = response.data;
@@ -105,6 +114,7 @@ function getOrders(data) {
             search_start_delivery_date:data.endDeliveryDate.format("YYYY-MM-DD"),
             search_order_status:data.selectedStatus,
             page: data.page,
+            token:cookie.load('token')
         },
         success:function (response) {
             if(response.result == true){

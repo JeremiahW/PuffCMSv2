@@ -9,6 +9,9 @@
 namespace app\common;
 
 
+use app\index\model\Persist;
+use think\Db;
+use think\Exception;
 use think\response\Json;
 
 class PuffCMSHelper
@@ -53,5 +56,54 @@ class PuffCMSHelper
 
     public static function isDateTime($param='', $format='Y-m-d H:i:s'){
         return date($format, strtotime($param)) === $param;
+    }
+
+    /*
+     * Save user to database and return the token.
+     * The expired date will be 1 day. unless user logoff.
+     * */
+    public static function Persist($user, $expired = 1){
+        $token = PuffCMSHelper::getGUID();
+
+        Db::transaction(function() use($user, $expired, $token) {
+            $dt = new \DateTime();
+            $createDate = $dt->format('Y-m-d H:i:s');
+            $expiredDate = $dt->add(new \DateInterval('P'.$expired.'D'))->format('Y-m-d H:i:s');
+
+            Db::table("PuffPersist")->where(["Username"=>$user])->update(["IsDeleted"=> 1]);
+
+            Db::table("PuffPersist")->insert(
+                [
+                    "Token" => $token,
+                    "Username" =>$user,
+                    "CreatedDate" =>$createDate,
+                    "ExpiredDate" =>$expiredDate
+                ]
+            );
+         });
+        return $token;
+
+    }
+
+    /*
+     * 根据用户传过来的Token, 过期时间, 来判断是否已经登录了.
+     * */
+    public static function IsLoggedIn($token){
+        $dt = new \DateTime();
+        $now = $dt->format('Y-m-d H:i:s');
+        $map["Token"] = $token;
+        $map["IsDeleted"] = 0;
+        $map["ExpiredDate"] = [">=", $now];
+        $num = Db::table("PuffPersist")->where($map)->count();
+        if($num > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static function Logoff($token){
+        Persist::where(["Token"=>$token])->update(["IsDeleted"=> 1]);
     }
 }

@@ -103,7 +103,13 @@ class Order extends BaseController
                    Db::table("PuffClient")->where(["Id"=>$clientId])->setInc("Total", $totalActPrice);
                    Db::table("PuffClient")->where(["Id"=>$clientId])->update(["LastShoppedDate"=>date("Y-m-d H:i:s"), "PrepaidBalance"=>$balance]);
                    Db::commit();
-                   return PuffCMSHelper::JsonResult("", true, "订单保存成功");
+
+                   $list = OrderBatch::with("orderItems,orderStatus,client,prepaidDetails")
+                       ->where(["PuffOrderBatch.Id"=>$batchId])
+                       ->order(["CreatedTime"=>"desc","DeliveryDate"=>"desc", "ActAmount"=>"desc", "OrderStatus"=>"asc"])
+                       ->select();
+
+                   return PuffCMSHelper::JsonResult($list, true, "订单保存成功");
                }
                catch (\Exception $e){
                    Db::rollback();

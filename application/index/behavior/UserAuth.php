@@ -1,8 +1,9 @@
 <?php
 namespace app\index\behavior;
 
-use think\Controller;
-use think\Session;
+use app\common\PuffCMSHelper;
+
+use think\Request;
 /**
  * Created by PhpStorm.
  * User: wangji
@@ -13,12 +14,9 @@ class UserAuth
 {
     use \traits\controller\Jump;
     public function run(&$params){
-        $val = Session::get("isLogged");
-        if(!Session::has("isLogged")){
+        $token = Request::instance()->param("token");
+        if(empty($token) || ! PuffCMSHelper::IsLoggedIn($token)){
             return $this->redirect("user/fail");
-        }
-        else{
-            $aa = "test";
         }
     }
 }

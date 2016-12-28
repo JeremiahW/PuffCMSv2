@@ -8,6 +8,7 @@ import  OrderSearchDispatcher from "../../actions/order/order-search-creator";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from "moment"
+import PrintDispatcher from '../../actions/print/print-creator';
 
 export default class OrderSearch extends React.Component{
     constructor(props){
@@ -68,7 +69,12 @@ export default class OrderSearch extends React.Component{
         e.preventDefault();
         console.log(this.state);
         OrderSearchDispatcher.SearchAction(this.state);
-
+    }
+    onPrint(){
+        var orders = OrderSearchAction.getSelections();
+        console.log("Print Orders:");
+        console.log(orders);
+        PrintDispatcher.PrintOrderAction(orders);
     }
     render(){
         return(
@@ -104,7 +110,7 @@ export default class OrderSearch extends React.Component{
                     </div>
                     <div className="col-sm-3">
                         <Button className=" btn btn-primary" onClick={this.onSubmit.bind(this)} >查询</Button>&nbsp;
-                        <Button className="btn btn-default">打印订单</Button>
+                        <Button className="btn btn-default" onClick={this.onPrint.bind(this)}>打印订单</Button>
                     </div>
 
                 </div>

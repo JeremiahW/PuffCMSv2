@@ -15,6 +15,8 @@ import ResultRow from "../../components/order/order-item-row";
 import DatePicker from "react-datepicker";
 import NumericInput from 'react-numeric-input';
 import moment from "moment"
+import cookie from 'react-cookie';
+import PrintDispatcher from '../../actions/print/print-creator';
 
 export default class OrderAdd extends React.Component{
     constructor(props){
@@ -54,13 +56,11 @@ export default class OrderAdd extends React.Component{
         OrderAction.removeOrderSubmitListener(this.onBtnSubmitCallback);
         OrderAction.dispose();
     }
-
     getClient(){
 
     }
     getOptions(input){
-        console.log(RequestUrl.POST_GET_CLIENTS+"/search_name/"+input);
-       return fetch(RequestUrl.POST_GET_CLIENTS+"/search_name/"+input).then((response)=>{
+       return fetch(RequestUrl.POST_GET_CLIENTS+"?search_name="+input+"&token="+cookie.load('token')).then((response)=>{
            return response.json();
        }).then((json)=>{
            var rows = [];
@@ -134,7 +134,6 @@ export default class OrderAdd extends React.Component{
                 newState[name] = event.target.value;
         }
         this.setState(newState);
-
     }
     onBtnSubmit(){
         let items = OrderAction.getFinalItems();
@@ -149,12 +148,13 @@ export default class OrderAdd extends React.Component{
         console.log(data);
         OrderDispatcher.OrderSubmitAction(data);
     }
+
     onBtnSubmitCallback(){
-        console.log("onBtnSubmitCallback");
-        let message = OrderAction.getServerResponse();
-        this.setState({showMessage:true, message:message.message});
-         if(this.state.isPrint  && message.result == true) {
-            console.log("要打印了");
+        let response = OrderAction.getServerResponse();
+        this.setState({showMessage:true, message:response.message});
+         if(this.state.isPrint  && response.result == true) {
+             console.log(response.data);
+             // PrintDispatcher.PrintOrderAction(response.data);
         }
     }
 

@@ -5,6 +5,7 @@ import OrderDispatcher from "../../actions/order/order-creator";
 import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
+import cookie from 'react-cookie';
 
 var _clients=[];
 var _availableItems = [];
@@ -121,6 +122,7 @@ function getAvailableItems() {
     $.ajax({
         url:RequestUrl.POST_GET_ITEMS,
         type:"POST",
+        data:{token:cookie.load('token')},
         success:function (response) {
             if(response.result === true){
                 _availableItems = response.data;
@@ -163,7 +165,7 @@ function saveOrder(data) {
     $.ajax({
         url:RequestUrl.POST_SAVE_ORDER,
         type:"POST",
-        data:{form:data},
+        data:{form:data, token:cookie.load('token')},
         success:function (response) {
             if(response.result === true){
 

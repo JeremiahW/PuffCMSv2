@@ -8,6 +8,7 @@ import PrepaidListView from "./prepaid-list";
 import PrepaidStore from "../../stores/prepaid/prepaid-stores";
 import PrepaidDispatcher from "../../actions/prepaid/prepaid-creator";
 import moment from "moment";
+import cookie from 'react-cookie';
 
 export default class Prepaid extends React.Component{
     constructor(props){
@@ -33,7 +34,7 @@ export default class Prepaid extends React.Component{
     }
 
     getOptions(input){
-        return fetch(RequestUrl.POST_GET_CLIENTS+"/search_name/"+input).then((response)=>{
+        return fetch(RequestUrl.POST_GET_CLIENTS+"?search_name="+input+"&token="+cookie.load('token')).then((response)=>{
             return response.json();
         }).then((json)=>{
             var rows = [];

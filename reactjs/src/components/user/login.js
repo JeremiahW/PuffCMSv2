@@ -4,6 +4,7 @@
 import React from 'react';
 import {Button} from 'react-bootstrap';
 import * as RequestUrl from "../../constants/request-url-constants";
+import cookie from 'react-cookie';
 
 export default class Login extends React.Component{
     constructor(props){
@@ -31,6 +32,7 @@ export default class Login extends React.Component{
             success:function (response) {
                 if(response.result == true){
                     console.log(response);
+                    cookie.save('token', response.data, { path: '/' });
                     this.props.callback();
                 }
             }.bind(this)

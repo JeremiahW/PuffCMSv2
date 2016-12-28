@@ -7,6 +7,7 @@ import  OrderSearchAction from "../../stores/order/order-search-store";
 import  OrderSearchDispatcher from "../../actions/order/order-search-creator";
 import OrderSearch from "./order-search";
 
+
 export default class OrderList extends React.Component{
     constructor(props){
         super(props);
@@ -62,7 +63,7 @@ export default class OrderList extends React.Component{
                           actAmount= {this.state.data[i].ActAmount}
                           comment= {this.state.data[i].Comment}
                           status= {this.state.data[i].orderStatus}
-                          items= {this.state.data[i].orderItems}
+                          orderItems= {this.state.data[i].orderItems}
                           client= {this.state.data[i].client}
                           prepaidDetails = {this.state.data[i].prepaidDetails}
                 />
@@ -134,7 +135,7 @@ class OrderRow extends React.Component{
             actAmount:this.props.actAmount,
             comment:this.props.comment,
             status:this.props.status,
-            items:this.props.items,
+            orderItems:this.props.orderItems,
             client:this.props.client,
             isSelected:false,
             prepaidDetails:this.props.prepaidDetails,
@@ -165,7 +166,7 @@ class OrderRow extends React.Component{
         var style = {"maxWidth": "none"};
 
       return ( <Popover id="popover-positioned-right" title="订单明细" style={style}>
-          {<ItemDetails items={this.state.items}/>}
+          {<ItemDetails items={this.state.orderItems}/>}
         </Popover>)
     }
     /*const onMouseOver = (event) =>{

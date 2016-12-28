@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Dropdown, Button } from 'react-bootstrap';
 import { Link, Location } from 'react-router';
 import * as RequestUrl from "../../constants/request-url-constants";
+import cookie from 'react-cookie';
+import { browserHistory } from 'react-router'
 
 class Navigation extends Component {
     constructor(props){
@@ -23,15 +25,17 @@ class Navigation extends Component {
     secondLevelActive(routeName) {
         return this.props.location.pathname.indexOf(routeName) > -1 ? "nav nav-second-level collapse in" : "nav nav-second-level collapse";
     }
-
     onLogOff(){
         console.log("onLogOff");
         $.ajax({
             url:RequestUrl.USER_LOG_OUT,
             type:"POST",
+            data:{token:cookie.load('token') },
             success:function (response) {
-
                 console.log(response);
+                cookie.remove('token', { path: '/' });
+                //this.setState({refresh:true});
+              //   browserHistory.push("/html#/main");
             }.bind(this)
         });
     }
@@ -44,7 +48,7 @@ class Navigation extends Component {
                             <div className="dropdown profile-element"> <span>
                              </span>
                                 <a data-toggle="dropdown" className="dropdown-toggle" href="#">
-                            <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">Example user</strong>
+                            <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">PuffCMS</strong>
                              </span>  </span> </a>
                                 <ul className="dropdown-menu animated fadeInRight m-t-xs">
                                     <li><Button onClick={this.onLogOff}> Logout</Button></li>

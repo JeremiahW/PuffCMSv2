@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, Button } from 'react-bootstrap';
 import { smoothlyMenu } from '../layouts/Helpers';
 import * as RequestUrl from "../../constants/request-url-constants";
+import cookie from 'react-cookie';
 
 class TopHeader extends React.Component {
     constructor(props){
@@ -20,8 +21,10 @@ class TopHeader extends React.Component {
         $.ajax({
             url:RequestUrl.USER_LOG_OUT,
             type:"POST",
+            data:{token:cookie.load('token') },
             success:function (response) {
                 console.log(response);
+                cookie.remove('token', { path: '/' });
                 this.props.logoff();
             }.bind(this)
         });

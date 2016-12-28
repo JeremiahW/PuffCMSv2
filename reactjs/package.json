@@ -28,6 +28,7 @@
     "keymirror": "^0.1.1",
     "metismenu": "^2.6.0",
     "moment": "^2.17.1",
+    "react-cookie": "^1.0.4",
     "react-data-grid": "^1.0.75",
     "react-datepicker": "^0.39.0",
     "react-numeric-input": "^2.0.6",

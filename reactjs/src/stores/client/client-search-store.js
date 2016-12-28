@@ -2,6 +2,7 @@ import AppDispatcher from "../../actions/client/client-search-creator";
 import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
+import cookie from 'react-cookie';
 
 var _result = [];
 var _condition = [];
@@ -42,12 +43,11 @@ AppDispatcher.register((action)=>{
 
 function getClient(data){
     _condition = data;
-
     $.ajax({
         url:RequestUrl.POST_GET_CLIENTS,
         type:"POST",
         dataType:"json",
-        data:{"page":data.page, "id":data.id, "search_name":data.name, "search_phone":data.phone, "search_address":data.address},
+        data:{"page":data.page, "id":data.id, "search_name":data.name, "search_phone":data.phone, "search_address":data.address,token:cookie.load('token')},
         success:function (response) {
             if(response.result == true){
                 _result = response;

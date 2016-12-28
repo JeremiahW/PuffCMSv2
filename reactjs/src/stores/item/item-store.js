@@ -5,6 +5,7 @@ import ItemDispatcher from "../../actions/item/item-creator";
 import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
+import cookie from 'react-cookie';
 
 var _items=[];
 var _condition =[];
@@ -78,7 +79,7 @@ function getItems(data, action){
     $.ajax({
         url:RequestUrl.POST_GET_ITEMS,
         type:"POST",
-        data:{page:data.page, id:data.id, search_name:data.search_name},
+        data:{page:data.page, id:data.id, search_name:data.search_name,token:cookie.load('token')},
         success:function (response) {
             if(response.result === true){
                 _items = response;
@@ -93,7 +94,7 @@ function saveItem(data) {
     $.ajax({
         url:RequestUrl.POST_SAVE_ITEMS,
         type:"POST",
-        data:{form:data},
+        data:{form:data,token:cookie.load('token')},
         success:function (response) {
             if(response.result == true){
                 _result = response;

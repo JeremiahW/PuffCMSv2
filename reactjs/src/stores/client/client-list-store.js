@@ -5,7 +5,7 @@ import AppDispatcher from "../../actions/client/client-list-creator";
 import {ActionConstants} from "../../constants/action-constants";
 import * as RequestUrl from "../../constants/request-url-constants";
 import {EventEmitter} from "events";
-
+import cookie from 'react-cookie';
 
 var _data = [];
 class ClientListStoreClass extends EventEmitter{
@@ -52,13 +52,12 @@ AppDispatcher.register((action)=>{
     }
 })
 
-
 function saveClient(data) {
     $.ajax({
         url:RequestUrl.POST_SAVE_CLIENT,
         type:"POST",
         dataType:"json",
-        data:{form:data},
+        data:{form:data, token:cookie.load('token')},
         crossDomain : true,
         success:function (response) {
             if(response.result == true){
