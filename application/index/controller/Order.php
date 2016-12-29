@@ -15,6 +15,7 @@ use app\index\model\Client;
 use app\index\model\Item;
 use app\index\model\OrderBatch;
 use app\index\model\OrderStatus;
+use think\Controller;
 use think\Db;
 use think\Request;
 use think\response\Json;
@@ -230,4 +231,23 @@ class Order extends BaseController
        $aa =  Client::get(["Id"=>'173ECB15-956C-99A7-8824-4CE7CA86DD4E'])["PrepaidBalance"];
        return json($aa);
     }
+
+    public function monthlyIncome(){
+        $map["Id"] =["<>", ""];
+        $start = Request::instance()->param("search_start_date");
+        $end = Request::instance()->param("search_end_date");
+
+        if(PuffCMSHelper::isDate($start) && PuffCMSHelper::isDate($end) ){
+            $map["CreatedTime"] = array(array(">=", $start),array("<=", $end));
+        }
+
+        $list = Db::table("PuffOrderBatch")->field('count(Id) Total,sum(ActAmount) Amount,Year(CreatedTime) Year,Month(CreatedTime) Month')
+            ->where($map)
+            ->group("Year(CreatedTime),Month(CreatedTime)")
+            ->order(["CreatedTime"=>"asc"])
+            ->select();
+        return PuffCMSHelper::JsonResultNoPagination($list, true, "请求成功");
+    }
+
+
 }

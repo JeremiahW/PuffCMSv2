@@ -17,3 +17,5 @@ export const POST_PREPAID = _ROOT + "index/prepaid/save";
 export const POST_USER_LOGIN = _ROOT + "index/user/login";
 export const GET_USER_STATE = _ROOT + "index/user/state";
 export const USER_LOG_OUT = _ROOT + "index/user/logoff";
+
+export const REPORT_MONTHLY_INCOME = _ROOT + "index/order/monthlyIncome";

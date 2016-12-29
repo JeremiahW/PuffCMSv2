@@ -40,6 +40,8 @@ var ActionConstants = keyMirror({
     PRINT_ORDER_REVIEW:null,
     PRINT_PREPAID_RECEIPT_REVIEW:null,
     PRINT_COMPLETED:null,
+
+    REPORT_GET_MONTHLY_INCOME:null
  });
 
 export {ActionConstants};

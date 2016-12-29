@@ -58,6 +58,9 @@ class PuffCMSHelper
         return date($format, strtotime($param)) === $param;
     }
 
+    public static function isDate($param='', $format='Y-m-d'){
+        return date($format, strtotime($param)) === $param;
+    }
     /*
      * Save user to database and return the token.
      * The expired date will be 1 day. unless user logoff.
