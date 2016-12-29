@@ -39,8 +39,13 @@ class Prepaid extends BaseController
             try {
                 $db = new PrepaidModel();
                 $data["Id"] = PuffCMSHelper::getGUID();
-                $db->allowField(true)->save($data);
+
+                $rows = Db::table("PuffClient")-> where(["Id" => $data["ClientId"]])->column("PrepaidBalance");
+                $totalBalance = $rows[0] + $data["Amount"];
+                $data["Balance"] =$totalBalance;
                 Db::table("PuffClient")->where(["Id" => $data["ClientId"]])->setInc("PrepaidBalance", $data["Amount"]);
+
+                $db->allowField(true)->save($data);
                 Db::commit();
             }
             catch (Exception $e){

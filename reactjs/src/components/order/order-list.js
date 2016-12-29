@@ -61,7 +61,7 @@ export default class OrderList extends React.Component{
                           deliveryDate= {this.state.data[i].DeliveryDate}
                           totalAmount= {this.state.data[i].TotalAmount}
                           actAmount= {this.state.data[i].ActAmount}
-                          comment= {this.state.data[i].Comment}
+                          comment= {this.state.data[i].Commnet}
                           status= {this.state.data[i].orderStatus}
                           orderItems= {this.state.data[i].orderItems}
                           client= {this.state.data[i].client}
@@ -128,12 +128,12 @@ class OrderRow extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            batchId:this.props.batchId,
-            createdTime:this.props.createdTime,
-            deliveryDate:this.props.deliveryDate,
-            totalAmount:this.props.totalAmount,
-            actAmount:this.props.actAmount,
-            comment:this.props.comment,
+            Id:this.props.batchId,
+            CreatedTime:this.props.createdTime,
+            DeliveryDate:this.props.deliveryDate,
+            TotalAmount:this.props.totalAmount,
+            ActAmount:this.props.actAmount,
+            Comment:this.props.comment,
             status:this.props.status,
             orderItems:this.props.orderItems,
             client:this.props.client,
@@ -142,7 +142,7 @@ class OrderRow extends React.Component{
         }
     }
     componentDidMount(){
-
+      //  console.log(this.props.comment);
     }
     componentWillUnmount(){
 
@@ -181,16 +181,16 @@ class OrderRow extends React.Component{
                 </OverlayTrigger>
             </td>
             <td>{this.state.client.Phone}</td>
-            <td>{this.state.createdTime}</td>
-            <td>{this.state.totalAmount}</td>
-            <td>{this.state.actAmount}</td>
+            <td>{this.state.CreatedTime}</td>
+            <td>{this.state.TotalAmount}</td>
+            <td>{this.state.ActAmount}</td>
             <td>{this.state.prepaidDetails.CashExpense}</td>
             <td>{this.state.prepaidDetails.PrepaidExpense}</td>
             <td>{this.state.prepaidDetails.PrepaidBalance}</td>
-            <td>{this.state.deliveryDate}</td>
+            <td>{this.state.DeliveryDate}</td>
             <td>{this.state.status.Subject}</td>
             <td>{this.state.client.DeliveryAddress}</td>
-            <td>{this.state.comment}</td>
+            <td>{this.state.Comment}</td>
         </tr>)
     }
 }

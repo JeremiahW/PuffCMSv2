@@ -21,6 +21,20 @@ class DispatcherItem extends Dispatcher {
             data:data,
         })
     }
+
+    PrepaidRowSelectedAction(data){
+        this.dispatch({
+            actionType:ActionConstants.PREPAID_ROW_SELECTED,
+            data:data,
+        })
+    }
+
+    PrepaidRowUnSelectedAction(data){
+        this.dispatch({
+            actionType:ActionConstants.PREPAID_ROW_UNSELECTED,
+            data:data,
+        })
+    }
 }
 
 const PrepaidDispatcher = new DispatcherItem();

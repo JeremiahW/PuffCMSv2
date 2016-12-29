@@ -6,6 +6,7 @@ import cookie from 'react-cookie';
 var _result = [];
 var _details = [];
 var _list = [];
+var _selectedItems = [];
 
 class PrepaidStoreClass extends EventEmitter{
     addSaveListener(callback){
@@ -17,14 +18,21 @@ class PrepaidStoreClass extends EventEmitter{
     addGetListListener(callback){
         this.on("getList", callback);
     }
-    removGetListListener(callback){
+    removeGetListListener(callback){
         this.removeListener("getList", callback);
     }
     addGetDetailsListener(callback){
         this.on("getDetails", callback);
     }
-    removGetDetailsListener(callback){
+    removeGetDetailsListener(callback){
         this.removeListener("getDetails", callback);
+    }
+
+    addSelectionChangedListener(callback){
+        this.on("selectionChanged", callback);
+    }
+    removeSelectionChangedListener(callback){
+        this.removeListener("selectionChanged", callback);
     }
 
     getDetails(){
@@ -37,6 +45,17 @@ class PrepaidStoreClass extends EventEmitter{
 
     getResult(){
         return _result;
+    }
+
+    getSelection(){
+        return _selectedItems;
+    }
+
+    dispose(){
+        _result = [];
+        _details = [];
+        _list = [];
+       _selectedItems = [];
     }
 
 }
@@ -54,6 +73,14 @@ PrepaidDispatcher.register((action)=>{
             getList(action.data);
             break;
         case ActionConstants.PREPAID_GET_DETAILED:
+            break;
+        case ActionConstants.PREPAID_ROW_UNSELECTED:
+            removeSelection(action.data);
+            PrepaidStore.emit("selectionChanged");
+            break;
+        case ActionConstants.PREPAID_ROW_SELECTED:
+            _selectedItems.push(action.data);
+            PrepaidStore.emit("selectionChanged");
             break;
     }
 })
@@ -86,4 +113,18 @@ function getList(data) {
             console.log(response);
         }
     })
+}
+
+function removeSelection(currentItem) {
+    let items = _selectedItems;
+    var index = -1;
+    for(var i=0;i<items.length;i++){
+        if(items[i].Id == currentItem.Id){
+            index = i;
+            console.log("Find Match at " + index);
+        }
+    }
+    if(index > -1) {
+        items.splice(index, 1);
+    }
 }

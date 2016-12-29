@@ -52,7 +52,7 @@ PrintDispatcher.register((action)=>{
             PrintStore.emit("printOrder");
             break;
         case ActionConstants.PRINT_PREPAID_RECEIPT_REVIEW:
-            _orders = action.data;
+            _receipts = action.data;
             PrintStore.emit("prepaidReceipt");
             break;
         case ActionConstants.PRINT_COMPLETED:

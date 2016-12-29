@@ -53,7 +53,7 @@ class User extends Controller
         if(!$isLoggedIn){
             return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, false, "验证失败");
         }
-        return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, true, "验证失败");
+        return PuffCMSHelper::JsonResultNoPagination($isLoggedIn, true, "验证成功");
     }
 
     public function fail(){

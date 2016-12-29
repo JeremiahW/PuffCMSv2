@@ -4,5 +4,5 @@ composer.lock
 thinkphp
 reactjs/build
 reactjs/node_modules
-vendor
+/vendor
 ThinkPHP5.0完全开发手册.pdf

@@ -9,6 +9,8 @@ import PrepaidStore from "../../stores/prepaid/prepaid-stores";
 import PrepaidDispatcher from "../../actions/prepaid/prepaid-creator";
 import moment from "moment";
 import cookie from 'react-cookie';
+import PrintDispatcher from '../../actions/print/print-creator';
+import PrintStore from '../../stores/print/print-store';
 
 export default class Prepaid extends React.Component{
     constructor(props){
@@ -18,6 +20,7 @@ export default class Prepaid extends React.Component{
         this.onBtnSubmitCallback = this.onBtnSubmitCallback.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onShowModal = this.onShowModal.bind(this);
+        this.onPrintClick = this.onPrintClick.bind(this);
         this.state = {
             selectedClient : "",
             amount:0,
@@ -28,10 +31,18 @@ export default class Prepaid extends React.Component{
     }
     componentDidMount(){
         PrepaidStore.addSaveListener(this.onBtnSubmitCallback);
-    }
+     }
     componentWillUnmount(){
         PrepaidStore.removeSaveListener(this.onBtnSubmitCallback);
-    }
+     }
+
+     onPrintClick(){
+        var items = PrepaidStore.getSelection();
+
+        var result = {client:this.state.selectedClient, items}
+
+        PrintDispatcher.PrintPrepaidReceiptAction(result);
+     }
 
     getOptions(input){
         return fetch(RequestUrl.POST_GET_CLIENTS+"?search_name="+input+"&token="+cookie.load('token')).then((response)=>{
@@ -51,6 +62,7 @@ export default class Prepaid extends React.Component{
         switch (name){
             case "selectedClient":
                 newState[name] = event;
+                PrepaidStore.dispose();
                 PrepaidDispatcher.PrepaidGetList(event.value);
                 break;
             default:
@@ -66,8 +78,9 @@ export default class Prepaid extends React.Component{
             Id:"",
             Amount:this.state.amount,
             ActAmount:this.state.actAmount,
-            CreatedDate:new moment().format("YYYY-MM-DD hh:mm:ss"),
+            CreatedDate:new moment().format("YYYY-MM-DD HH:mm:ss"),
             Description:this.state.description,
+            Balance:0,
         }
         PrepaidDispatcher.PrepaidSaveAction(data);
     }
@@ -116,7 +129,7 @@ export default class Prepaid extends React.Component{
 
                         <div className="col-sm-3">
                             <Button onClick={this.onShowModal}>提交</Button>&nbsp;
-                            <Button>打印记录</Button>
+                            <Button onClick={this.onPrintClick}>打印记录</Button>
                         </div>
                     </div>
                 </div>

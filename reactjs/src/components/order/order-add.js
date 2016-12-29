@@ -154,7 +154,7 @@ export default class OrderAdd extends React.Component{
         this.setState({showMessage:true, message:response.message});
          if(this.state.isPrint  && response.result == true) {
              console.log(response.data);
-             // PrintDispatcher.PrintOrderAction(response.data);
+             PrintDispatcher.PrintOrderAction(response.data);
         }
     }
 

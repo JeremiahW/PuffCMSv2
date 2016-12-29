@@ -1,12 +1,17 @@
 /**
  * Created by wangji on 12/28/2016.
  */
-import React, { Component } from 'react';
+import React from 'react';
 import {Button} from 'react-bootstrap';
 import PrintDispatcher from '../../actions/print/print-creator';
 import PrintStore from '../../stores/print/print-store';
+import ReceiptHeader from './print-header';
+import ReceiptFooter from './print-footer';
+import ClientInfo from './print-order-client';
+import OrderItems from './print-order-item';
+import PrepaidInfo from './print-order-prepaid';
 
-export default class PrintOrder extends Component {
+export default class PrintOrder extends React.Component {
     constructor(props){
         super(props)
     }
@@ -39,25 +44,25 @@ export default class PrintOrder extends Component {
         var rows = [];
         var orders = PrintStore.getOrders();
         for(var i=0; i<orders.length;i++){
-            rows.push(<ReceiptHeader key={orders[i].batchId + "Header:"+ i} batchId={orders[i].batchId}/>);
+            rows.push(<ReceiptHeader key={orders[i].Id + "Header:"+ i} batchId={orders[i].Id}/>);
 
-            rows.push(<ClientInfo key={orders[i].batchId}
+            rows.push(<ClientInfo key={orders[i].Id}
                             name={orders[i].client.Name}
                             phone={orders[i].client.Phone}
-                            deliveryDate={orders[i].deliveryDate}
+                            deliveryDate={orders[i].DeliveryDate}
                             address={orders[i].client.DeliveryAddress}
-                            totalAmount={orders[i].totalAmount}
-                            actAmount={orders[i].actAmount}/>
+                            totalAmount={orders[i].TotalAmount}
+                            actAmount={orders[i].ActAmount}/>
             )
 
-            rows.push(<OrderItems items={orders[i].orderItems} key={orders[i].batchId + "Items:"+ i}/>);
+            rows.push(<OrderItems items={orders[i].orderItems} key={orders[i].Id + "Items:"+ i}/>);
 
-            rows.push(<PrepaidInfo key={orders[i].batchId + "Prepaid:"+ i}
+            rows.push(<PrepaidInfo key={orders[i].BatchId + "Prepaid:"+ i}
                 cashExpense = {orders[i].prepaidDetails.CashExpense}
                 prepaidBalance = {orders[i].prepaidDetails.PrepaidBalance}
                 prepaidExpense = {orders[i].prepaidDetails.PrepaidExpense}/>)
 
-            rows.push(<ReceiptFooter key={orders[i].batchId + "Footer:"+ i} comment={orders[i].comments} />);
+            rows.push(<ReceiptFooter key={orders[i].Id + "Footer:"+ i} comment={orders[i].Comment} />);
         }
 
         return rows;
@@ -69,118 +74,3 @@ export default class PrintOrder extends Component {
     }
 }
 
-class ReceiptHeader extends React.Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
-        return (<div>
-            {this.props.batchId}
-        </div>)
-    }
-}
-
-class ReceiptFooter extends React.Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
-        return (<div>
-            {this.props.comments}
-        </div>)
-    }
-}
-
-class ClientInfo extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
-    render(){
-        return (<table className="table table-bordered">
-            <tbody>
-                <tr>
-                    <td>姓名:</td>
-                    <td>{this.props.name}</td>
-                    <td>送货日期:</td>
-                    <td>{this.props.deliveryDate}</td>
-                </tr>
-                <tr>
-                    <td>电话:</td>
-                    <td>{this.props.phone}</td>
-                    <td>总价:{this.props.totalAmount}</td>
-                    <td>会员价:{this.props.actAmount}</td>
-                </tr>
-                <tr>
-                    <td>地址:</td>
-                    <td colSpan="3">{this.props.address}</td>
-                </tr>
-            </tbody>
-        </table>)
-    }
-}
-
-class OrderItems extends React.Component{
-    constructor(props){
-        super(props);
-        this.getContent = this.getContent.bind(this);
-    }
-
-    getContent(){
-        var rows = [];
-        for(var i=0;i<this.props.items.length;i++){
-            rows.push(
-                <tr key={this.props.items[i].Id}>
-                    <td>{this.props.items[i].ItemName}</td>
-                    <td>{this.props.items[i].ItemPrice}</td>
-                    <td>{this.props.items[i].ItemNum}</td>
-                    <td>{this.props.items[i].ItemTotalPrice}</td>
-                    <td>{this.props.items[i].ItemUnit}</td>
-                </tr>
-            )
-        }
-        return rows;
-    }
-    render(){
-       return (<table className="table table-bordered">
-        <thead>
-            <tr>
-                <td>品名</td>
-                <td>单价</td>
-                <td>数量</td>
-                <td>总价</td>
-                <td>单位</td>
-            </tr>
-        </thead>
-           <tbody>
-           {this.getContent()}
-           </tbody>
-        </table>)
-    }
-}
-
-class PrepaidInfo extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
-    render(){
-        return (<table className="table table-bordered">
-                <tbody>
-                <tr>
-                    <td>现金应支付:</td>
-                    <td>{this.props.cashExpense}</td>
-                </tr>
-                <tr>
-                    <td>余额支付:</td>
-                    <td>{this.props.prepaidExpense}</td>
-                </tr>
-                <tr>
-                    <td>当次消费余额:</td>
-                    <td>{this.props.prepaidBalance}</td>
-                </tr>
-                </tbody>
-            </table>
-        );
-    }
-}

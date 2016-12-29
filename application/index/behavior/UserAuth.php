@@ -15,7 +15,7 @@ class UserAuth
     use \traits\controller\Jump;
     public function run(&$params){
         $token = Request::instance()->param("token");
-        if(empty($token) || ! PuffCMSHelper::IsLoggedIn($token)){
+        if(empty($token) ||!PuffCMSHelper::IsLoggedIn($token)){
             return $this->redirect("user/fail");
         }
     }
