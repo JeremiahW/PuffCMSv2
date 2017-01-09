@@ -10,6 +10,7 @@ export const POST_SAVE_ITEMS = _ROOT + "index/item/save";
 export const POST_SAVE_ORDER = _ROOT + "index/order/save";
 export const GET_ORDER_LIST = _ROOT + "index/order/get";
 export const GET_ORDER_STATUS = _ROOT + "index/order/getStatus";
+export const GET_CLIENT_BALANCE = _ROOT + "index/order/getBalance";
 
 export const GET_PREPAID_LIST = _ROOT + "index/prepaid/get";
 export const POST_PREPAID = _ROOT + "index/prepaid/save";

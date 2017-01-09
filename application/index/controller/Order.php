@@ -15,12 +15,14 @@ use app\index\model\Client;
 use app\index\model\Item;
 use app\index\model\OrderBatch;
 use app\index\model\OrderStatus;
+use app\index\model\Prepaid;
+use app\index\model\PrepaidDetails;
 use think\Controller;
 use think\Db;
 use think\Request;
 use think\response\Json;
 
-class Order extends BaseController
+class Order extends Controller
 {
     public function save(){
 
@@ -150,6 +152,19 @@ class Order extends BaseController
     public function getStatus(){
         $list = OrderStatus::where("1=1")->select();
         return PuffCMSHelper::JsonResultNoPagination($list, true, "成功");
+    }
+
+    public function getBalance(){
+        $cid = Request::instance()->param("cid");
+        if(!empty($cid)){
+            $totalPrepaid = Prepaid::where(["ClientId"=>$cid])->sum("Amount");
+            $totalExpense = PrepaidDetails::where(["ClientId"=>$cid])->sum("PrepaidExpense");
+            $result = ["totalPrepaid"=>$totalPrepaid, "totalExpense"=>$totalExpense, "balance"=>$totalPrepaid - $totalExpense];
+            return PuffCMSHelper::JsonResultNoPagination($result, true, "请求成功");
+        }
+        else{
+            return PuffCMSHelper::JsonResultNoPagination(false, false, "请求错误");
+        }
     }
 
     protected function allowSave(){

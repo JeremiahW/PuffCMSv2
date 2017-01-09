@@ -28,6 +28,7 @@ export default class OrderAdd extends React.Component{
         this.onItemChanged = this.onItemChanged.bind(this);
         this.onBtnSubmit = this.onBtnSubmit.bind(this);
         this.onBtnSubmitCallback = this.onBtnSubmitCallback.bind(this);
+        this.refreshPayment = this.refreshPayment.bind(this);
         this.state = {
             selectedClient:"",
             items:[],
@@ -38,6 +39,10 @@ export default class OrderAdd extends React.Component{
             isPrint: true,
             showMessage: false,
             message:"",
+            balance:[],
+            payInCash:0,
+            prepaidExpense:0,
+            prepaidBalance:0,
         }
     }
     componentDidMount() {
@@ -116,11 +121,51 @@ export default class OrderAdd extends React.Component{
         this.setState({
             totalPrice:totalPrice,
             totalActPrice:totalActPrice
+        }, function () {
+            this.refreshPayment();
+        }.bind(this));
+    }
+
+    refreshPayment(){
+
+        var newPrepaidBalance = this.state.balance;
+        var newPayInCash = this.state.payInCash;
+        var newPrepaidExpense = this.state.prepaidExpense;
+
+        //购买金额大于或者等于充值余额
+        if(this.state.totalActPrice >= newPrepaidBalance){
+            newPrepaidExpense = newPrepaidBalance; //扣除全部余额
+            newPayInCash = this.state.totalActPrice - newPrepaidBalance; //多余部份采用现金支付
+            newPrepaidBalance = 0; //现金归为
+        }
+        else{ //购买金额小于充值金额
+            newPrepaidExpense =  this.state.totalActPrice; //直接从余额里面扣款.
+            newPrepaidBalance = newPrepaidBalance - this.state.totalActPrice; //余额-本次消费额, 即是充值卡支付的费用.
+            newPayInCash = 0; //不需要现金
+        }
+
+        this.setState({
+            payInCash:newPayInCash,
+            prepaidExpense:newPrepaidExpense,
+            prepaidBalance:newPrepaidBalance,
         });
     }
+
     onClientSelected(val) {
-        this.setState({selectedClient: val});
+        this.setState({selectedClient: val}, function () {
+            $.ajax({
+                url:RequestUrl.GET_CLIENT_BALANCE,
+                type:"POST",
+                data:{token:cookie.load('token'), cid:val.value},
+                success:function (response) {
+                    if(response.result === true){
+                        this.setState({balance:response.data.balance, prepaidBalance:response.data.balance});
+                    }
+                }.bind(this)
+            });
+        })
     }
+
     handleChange(name, event){
         var newState = {};
         switch (name){
@@ -133,7 +178,11 @@ export default class OrderAdd extends React.Component{
             default:
                 newState[name] = event.target.value;
         }
-        this.setState(newState);
+        this.setState(newState, function () {
+            if(name == "totalActPrice"){
+                this.refreshPayment();
+            }
+        }.bind(this));
     }
     onBtnSubmit(){
         let items = OrderAction.getFinalItems();
@@ -191,25 +240,28 @@ export default class OrderAdd extends React.Component{
                     <table className="table table-bordered">
                         <tbody>
                         <tr>
-                            <td>总金额</td>
-                            <td><input type="text" className="form-control"  readOnly  onChange={this.handleChange.bind(this, "totalPrice")} value={this.state.totalPrice || '0'} /></td>
-                            <td>实付金额</td>
+                            <td>总金额/折扣金额</td>
+                            <td>
+                                <input type="text" className="form-control"  readOnly  onChange={this.handleChange.bind(this, "totalPrice")} value={this.state.totalPrice || '0'} />
+                            </td>
+                            <td>实付现金金额</td>
+                            <td><input step={0.1} type="number" value={this.state.payInCash || "0"} onChange={this.handleChange.bind(this, "payInCash")}  className="form-control"/></td>
+                            <td>充值卡扣除</td>
+                            <td><input step={0.1} type="number" value={this.state.prepaidExpense || "0"} onChange={this.handleChange.bind(this, "prepaidExpense")}  className="form-control"/></td>
+                            <td>充值卡余额</td>
+                            <td><input type="text" className="form-control"  readOnly  onChange={this.handleChange.bind(this, "prepaidBalance")} value={this.state.prepaidBalance || '0'} /></td>
 
-                            <td><input step={0.1} type="number" value={this.state.totalActPrice || "0"} onChange={this.handleChange.bind(this, "totalActPrice")}  className="form-control"/></td>
+                        </tr>
+                        <tr>
+                            <td>折扣后总金额</td>
+                            <td>
+                                <input step={0.1} type="number" value={this.state.totalActPrice || "0"} onChange={this.handleChange.bind(this, "totalActPrice")}  className="form-control"/>
+                            </td>
                             <td>备注</td>
                             <td><input type="text" className="form-control"   onChange={this.handleChange.bind(this, "comment")} value={this.state.comment || ''} /></td>
                             <td>送货日期</td>
-                            <td>
-                                <DatePicker className="form-control" dateFormat="YYYY-MM-DD" selected={this.state.deliveryDate}   onChange={this.handleChange.bind(this, "deliveryDate")}  />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><DatePicker className="form-control" dateFormat="YYYY-MM-DD" selected={this.state.deliveryDate}   onChange={this.handleChange.bind(this, "deliveryDate")}  /></td>
+
                             <td>
                                 <input type="checkbox" checked={this.state.isPrint} onChange={this.handleChange.bind(this, "isPrint")}/> &nbsp;是否打印
                             </td>
