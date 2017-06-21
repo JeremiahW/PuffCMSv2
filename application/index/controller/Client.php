@@ -24,19 +24,24 @@ class Client extends BaseController
     public function get()
     {
         $page = Request::instance()->post("page");
+        $pageSize = Request::instance()->post("pageSize");
+
+        if(empty($pageSize))
+            $pageSize = PuffCMSHelper::$ClientPageSize;
+
         if (empty($page))
             $page = 1;
 
         $count = ClientModel::where($this->getWhere())->count();
 
-        $totalPages = ceil($count / PuffCMSHelper::$ClientPageSize);
+        $totalPages = ceil($count / $pageSize);
 
         $list = ClientModel::where($this->getWhere())
-            ->limit($page-1, PuffCMSHelper::$ClientPageSize)
+            ->limit($page-1, $pageSize)
             ->order(["LastShoppedDate" => "desc", "Total" => "desc"])
             ->select();
 
-        return PuffCMSHelper::JsonResult($list, true, true, $totalPages, PuffCMSHelper::$ClientPageSize);
+        return PuffCMSHelper::JsonResult($list, true, true, $totalPages, $pageSize);
     }
 
     public function save()
