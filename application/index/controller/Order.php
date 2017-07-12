@@ -22,8 +22,14 @@ use think\Db;
 use think\Request;
 use think\response\Json;
 
-class Order extends Controller
+class Order extends BaseController
 {
+    public function __construct(Request $request = null)
+    {
+        //header('Access-Control-Allow-Origin: *');
+        parent::__construct($request);
+    }
+
     public function save(){
 
         if(Request::instance()->isPost()) {
