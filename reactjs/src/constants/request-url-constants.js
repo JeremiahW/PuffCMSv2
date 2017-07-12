@@ -1,4 +1,4 @@
-var _ROOT = "http://localhost:8080/PuffCMSv2/public/index.php/";
+var _ROOT = "https://api.51bakery.com/index.php/";
 
 export const POST_GET_CLIENTS = _ROOT + "index/client/get";
 export const POST_SAVE_CLIENT = _ROOT + "index/client/save";

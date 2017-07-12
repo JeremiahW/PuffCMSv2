@@ -7,6 +7,6 @@ class Index
 {
     public function index()
     {
-        return phpinfo();
+        redirect("index/user/login");
     }
 }
